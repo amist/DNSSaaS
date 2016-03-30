@@ -2,37 +2,32 @@ from bottle import default_app, route, run, request
 import pickle
 
 DICT_FILE = 'dict.p'
-SECRETS_FILE = 'secrets.p'
 
 dict = pickle.load(open(DICT_FILE, "rb"))
-secrets = pickle.load(open(SECRETS_FILE, "rb"))
 
 @route('/')
 def root():
-    return "server is alive. dict = {}, secrets = {}".format(str(dict), str(secrets))
+    return "server is alive. dict = {}".format(str(dict))
     
     
-@route('/register/<secret>/<domain>/<service>')
-def register(secret, domain, service):
+@route('/register/<secret>/<service>')
+def register(secret, service):
     client_ip = request.environ.get('REMOTE_ADDR')
-    if domain not in dict:
-        dict[domain] = {}
-        secrets[domain] = secret
-    if secrets[domain] == secret:
-        if service not in dict[domain]:
-            dict[domain][service] = set([])
-        dict[domain][service].add(client_ip)
+    if secret not in dict:
+        dict[secret] = {}
+    if service not in dict[secret]:
+        dict[secret][service] = set([])
+    dict[secret][service].add(client_ip)
     
     pickle.dump(dict, open(DICT_FILE, "wb"))
-    pickle.dump(secrets, open(SECRETS_FILE, "wb"))
     
-    return "registration from {}".format(client_ip)
+    return {'status': 'OK'}
     
     
-@route('/resolve/<domain>/<service>')
-def resolve(domain, service):
+@route('/resolve/<secret>/<service>')
+def resolve(secret, service):
     client_ip = request.environ.get('REMOTE_ADDR')
-    ips_set = dict.get(domain, {}).get(service, set([]))
+    ips_set = dict.get(secret, {}).get(service, set([]))
     if client_ip in ips_set:
         return client_ip
     if len(ips_set) > 0:
