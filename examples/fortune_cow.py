@@ -6,7 +6,7 @@ def get_fortune():
     
     
 def get_cow(text):
-    return requests.post('http://cow_provider:8777/v1/cow', data = "{'text': '%s'}" % text)
+    return requests.post('http://cow_provider:8777/v1/cow', json = "{'text': '%s'}" % text)
     
 
 page = '''<pre>
