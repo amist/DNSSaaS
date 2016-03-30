@@ -25,8 +25,11 @@ import time, random, urllib2, json
 
 MAX_SLEEP_TIME = 10
 
+@route('/MachineB/<letter>/')
+@route('/MachineB/<letter>/<flag>/')
 @route('/MachineB/<letter>/<flag>')
-def LetterB(letter):
+@route('/MachineB/<letter>')
+def LetterB(letter, flag='pop'):
     letters = letter + chr(random.randint(65,90))
     if flag.lower() == 'd':
         req = urllib2.Request('http://localhost:999/MachineC/%s' % letters)

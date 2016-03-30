@@ -11,7 +11,7 @@ DEFAULT_JSON = {"DNSS_Server": "http://10.149.208.98:8000/",
                 "etc_hosts": '/etc/hosts',
                 "sleep_time": 5,
                 'secret': 'my_very_long_secret_stuff',
-                'service': "s1",
+                'services': ["s1", "s2"],
                }
 
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), r'config.json')
