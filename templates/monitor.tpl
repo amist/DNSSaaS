@@ -6,6 +6,7 @@
 <ul>
     % for service, hosts in services.items():
     <li>
+        {{service}}
         % for host in hosts:
         <ul>  
             <li>

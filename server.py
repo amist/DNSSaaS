@@ -47,11 +47,10 @@ def resolve(secret):
             
            }
     
-
-@view('monitor.tpl')
 @route('/monitor/<secret>')
+@view('monitor.tpl')
 def monitor(secret):
-    return table.get(secret, {})
+    return {'services': table.get(secret, {})}
     
 application = default_app()
 
