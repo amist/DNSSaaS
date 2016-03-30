@@ -30,9 +30,9 @@ MAX_SLEEP_TIME = 10
 def LetterA(flag):
     letter = chr(random.randint(65,90))
     if flag.lower() == 'd':
-        req = urllib2.Request('http://localhost:8888/MachineB/%s' % letter)
+        req = urllib2.Request('http://localhost:8777/MachineB/%s' % letter)
     else:
-        req = urllib2.Request('http://machineb:8888/MachineB/%s' % letter)
+        req = urllib2.Request('http://machineb:8777/MachineB/%s' % letter)
     response = urllib2.urlopen(req)
     data = json.load(response)
     return {"result": data['result']}
@@ -48,5 +48,5 @@ def sleep_random():
 application = default_app()
 
 if __name__ == '__main__':
-    application.run(debug=True, reload=True, host="localhost", port=888)
+    application.run(debug=True, reload=True, host="0.0.0.0", port=888)
 
