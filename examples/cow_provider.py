@@ -20,10 +20,11 @@ import subprocess
 
 
 @post('/v1/cow/')
-@post('/v1/cow/')
-def LetterA():
+@post('/v1/cow')
+def cow():
     text = request.json['text']
     output = subprocess.check_output(["cowsay", text])
+    print ("output")
     return {"result": output}
 
 application = default_app()
