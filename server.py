@@ -1,18 +1,11 @@
 from bottle import default_app, route, run, request, get
-import pickle
 import random
 import os
 
 
 MAX_IDLE_TIME = 10
 
-DICT_FILE = 'dict.p'
-if not os.path.isfile(DICT_FILE):
-    with open(DICT_FILE, 'wb') as f:
-        pickle.dump({}, f)
-   
-table = pickle.load(open(DICT_FILE, "rb"))
-print (table)
+table = {}
 
 
 @route('/')
@@ -30,8 +23,6 @@ def register(secret, service):
         table[secret][service] = dict()
     table[secret][service][client_ip] = {'last_time': time.time()}
     
-    with open(DICT_FILE, 'wb') as f:
-        pickle.dump(table, f)
     return {'status': 'OK'}
 
 def clear_old(services):
