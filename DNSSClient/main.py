@@ -53,7 +53,7 @@ class DNSSClient(object):
     while 1:
       time.sleep(self.sleep_time)
       if counter == 0:
-        for service in conf['services']:
+        for service in self.conf['services']:
           try:
             r = requests.get(self.server_url + '/register/{secret}/{service}'.format(
                                                      service=service, **self.conf))
