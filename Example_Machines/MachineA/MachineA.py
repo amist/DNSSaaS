@@ -25,10 +25,14 @@ import time, random, urllib2, json
 
 MAX_SLEEP_TIME = 10
 
-@route('/MachineA/')
-def LetterA():
+@route('/MachineA/<flag>')
+@route('/MachineA/<flag>/')
+def LetterA(flag):
     letter = chr(random.randint(65,90))
-    req = urllib2.Request('http://localhost:8888/MachineB/%s' % letter)
+    if flag.lower() == 'd':
+        req = urllib2.Request('http://localhost:8888/MachineB/%s' % letter)
+    else:
+        req = urllib2.Request('http://machineb:8888/MachineB/%s' % letter)
     response = urllib2.urlopen(req)
     data = json.load(response)
     return {"result": data['result']}
