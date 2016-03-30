@@ -24,7 +24,7 @@ def register(domain, service):
     return "registration from {}".format(client_ip)
     
     
-@route('/<domain>/<service>')
+@route('/resolve/<domain>/<service>')
 def resolve(domain, service):
     client_ip = request.environ.get('REMOTE_ADDR')
     if domain in dict and service in dict[domain]:
