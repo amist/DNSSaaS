@@ -2,10 +2,10 @@ from bottle import default_app, route, run, request
 import pickle
 
 DICT_FILE = 'dict.p'
+SECRETS_FILE = 'secrets.p'
 
 dict = pickle.load(open(DICT_FILE, "rb"))
-
-secrets = {'yoav': 'secret1', 'amitay': 'secret2'}
+secrets = pickle.load(open(SECRETS_FILE, "rb"))
 
 @route('/')
 def root():
@@ -24,6 +24,7 @@ def register(secret, domain, service):
         dict[domain][service].add(client_ip)
     
     pickle.dump(dict, open(DICT_FILE, "wb"))
+    pickle.dump(secrets, open(SECRETS_FILE, "wb"))
     
     return "registration from {}".format(client_ip)
     
