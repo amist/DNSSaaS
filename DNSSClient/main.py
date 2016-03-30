@@ -50,15 +50,16 @@ class DNSSClient(object):
 
   def run(self):
     counter = 0
-    params = {'secret': self.secret}
     while 1:
       time.sleep(self.sleep_time)
       if counter == 0:
-        try:
-          r = requests.get(self.server_url + '/register/{secret}/{service}'.format(**self.conf))
-        except Exception as e:
-          print ("error registering... %s" % e)
-          continue
+        for service in conf['services']:
+          try:
+            r = requests.get(self.server_url + '/register/{secret}/{service}'.format(
+                                                     service=service, **self.conf))
+          except Exception as e:
+            print ("error registering... %s" % e)
+            continue
         status = r.text
         print(status)
         if 'OK' not in status: continue
