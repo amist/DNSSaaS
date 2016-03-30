@@ -2,11 +2,11 @@ from bottle import default_app, route, run, request, get
 import requests
 
 def get_fortune():
-    return requests.get('http://fortune_generator:9999/v1/fortune').text
+    return requests.get('http://fortune_generator:9999/v1/fortune').json()['result']
     
     
 def get_cow(text):
-    return requests.post('http://cow_provider:8777/v1/cow', json = "{'text': '%s'}" % text)
+    return requests.post('http://cow_provider:8777/v1/cow', json = {'text': text}).json()['result']
     
 
 page = '''<pre>
