@@ -26,7 +26,10 @@ def register(domain, service):
     
 @route('/<domain>/<service>')
 def resolve(domain, service):
-    return list(dict[domain][service])[0]
+    if domain in dict and service in dict[domain]:
+        return list(dict[domain][service])[0]
+    else:
+        return ''
     
     
 application = default_app()
