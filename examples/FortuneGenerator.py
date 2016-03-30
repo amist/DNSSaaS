@@ -9,7 +9,7 @@ MAX_SLEEP_TIME = 10
 @route('/v1/fortune')
 
 def fortuneGenerator():
-    return {"result": os.popen("fortune", "r").readlines()}
+    return {"result": os.popen("fortune", "r").read()}
 
 application = default_app()
 
