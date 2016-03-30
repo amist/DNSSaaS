@@ -49,21 +49,18 @@ class DNSSClient(object):
       f.write(backup)
 
   def run(self):
-    counter = 0
     while 1:
       time.sleep(self.sleep_time)
-      if counter == 0:
-        for service in self.conf['services']:
-          try:
-            r = requests.get(self.server_url + '/register/{secret}/{service}'.format(
-                                                     service=service, **self.conf))
-          except Exception as e:
-            print ("error registering... %s" % e)
-            continue
-        status = r.text
-        print(status)
-        if 'OK' not in status: continue
-      counter = (counter + 1) % 50
+      for service in self.conf['services']:
+        try:
+          r = requests.get(self.server_url + '/register/{secret}/{service}'.format(
+                                                   service=service, **self.conf))
+        except Exception as e:
+          print ("error registering... %s" % e)
+          continue
+      status = r.text
+      print(status)
+      if 'OK' not in status: continue
       try:
         r = requests.get(self.server_url + '/resolve/%s' % self.secret)
       except Exception as e:
