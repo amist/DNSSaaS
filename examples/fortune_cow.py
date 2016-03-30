@@ -9,11 +9,17 @@ def get_cow(text):
     return requests.post('http://cow_provider/v1/cow', data = "{'text': '%s'}" % text)
     
 
-@route('/')
+page = '''<pre>
+%s
+</pre>'''
+    
+    
+@route('/fortune_cow')
+@route('/fortune_cow/')
 def main():
-    return {'result': get_cow(get_fortune())}
+    return page % get_cow(get_fortune())
     
 application = default_app()
 
 if __name__ == '__main__':
-    run(host='0.0.0.0', port=9100)
+    run(host='0.0.0.0', port=80)
