@@ -1,18 +1,20 @@
 from bottle import default_app, route, run, request, get
-import pickle, json
+import pickle
 import random
 import os
 
 DICT_FILE = 'dict.p'
 if not os.path.isfile(DICT_FILE):
-    with open("dict.p", 'w') as f:
-        f.write("{}")  
+    with open(DICT_FILE, 'wb') as f:
+        pickle.dump({}, f)
    
-table = json.load(open(DICT_FILE, "r"))
+table = pickle.load(open(DICT_FILE, "rb"))
 print (table)
+
+
 @route('/')
 def root():
-    return "server is alive. table = {}".format(table)
+    return "table = {}".format(table)
     
     
 @get('/register/<secret>/<service>')
@@ -25,8 +27,8 @@ def register(secret, service):
         table[secret][service] = set()
     table[secret][service].add(client_ip)
     
-    #json.dump(table, open(DICT_FILE, "w"))
-    print ("COOL")
+    with open(DICT_FILE, 'wb') as f:
+        pickle.dump(table, f)
     return {'status': 'OK'}
     
     
