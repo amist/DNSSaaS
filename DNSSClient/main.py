@@ -54,12 +54,19 @@ class DNSSClient(object):
     while 1:
       time.sleep(self.sleep_time)
       if counter == 0:
-        r = requests.get(self.server_url + '/register/{secret}/{service}'.format(**self.conf))
+        try:
+          r = requests.get(self.server_url + '/register/{secret}/{service}'.format(**self.conf))
+        except Exception as e:
+          print ("error registering... %s" % e)
+          continue
         status = r.text
         print(status)
         if 'OK' not in status: continue
       counter = (counter + 1) % 50
-      r = requests.get(self.server_url + '/resolve/%s' % self.secret)
+      try:
+        r = requests.get(self.server_url + '/resolve/%s' % self.secret)
+      except Exception as e:
+        print("error resolving hosts... %s"%e)
       stuff = r.text
       print("stuff =>", stuff)
       stuff = json.loads(stuff)
