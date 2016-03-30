@@ -3,8 +3,8 @@ import pickle
 
 DICT_FILE = 'dict.p'
 
-# dict = pickle.load(open(DICT_FILE, "rb"))
-dict = {'yoav': {'s1': {'10.10.10.10'}, 's2': {'11.11.11.11'}}}
+dict = pickle.load(open(DICT_FILE, "rb"))
+
 secrets = {'yoav': 'secret1', 'amitay': 'secret2'}
 
 @route('/')
