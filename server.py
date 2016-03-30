@@ -26,10 +26,12 @@ def register(domain, service):
     
 @route('/<domain>/<service>')
 def resolve(domain, service):
+    client_ip = request.environ.get('REMOTE_ADDR')
     if domain in dict and service in dict[domain]:
+        if client_ip in dict[domain][service]:
+            return client_ip
         return list(dict[domain][service])[0]
-    else:
-        return ''
+    return ''
     
     
 application = default_app()
