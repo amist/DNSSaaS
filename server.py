@@ -1,7 +1,9 @@
 from bottle import default_app, route, run, request
+import pickle
 
-# dict = {'yoav': {'s1': set(['10.10.10.10']), 's2': set(['11.11.11.11'])}}
-dict = {}
+DICT_FILE = 'dict.p'
+
+dict = pickle.load(open(DICT_FILE, "rb"))
 
 @route('/')
 def root():
@@ -16,6 +18,9 @@ def register(domain, service):
     if service not in dict[domain]:
         dict[domain][service] = set([])
     dict[domain][service].add(client_ip)
+    
+    pickle.dump(dict, open(DICT_FILE, "wb"))
+    
     return "registration from {}".format(client_ip)
     
     
