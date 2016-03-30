@@ -3,21 +3,25 @@ import pickle
 
 DICT_FILE = 'dict.p'
 
-dict = pickle.load(open(DICT_FILE, "rb"))
+# dict = pickle.load(open(DICT_FILE, "rb"))
+dict = {'yoav': {'s1': {'10.10.10.10'}, 's2': {'11.11.11.11'}}}
+secrets = {'yoav': 'secret1', 'amitay': 'secret2'}
 
 @route('/')
 def root():
-    return "server is alive. dict = {}".format(str(dict))
+    return "server is alive. dict = {}, secrets = {}".format(str(dict), str(secrets))
     
     
-@route('/register/<domain>/<service>')
-def register(domain, service):
+@route('/register/<secret>/<domain>/<service>')
+def register(secret, domain, service):
     client_ip = request.environ.get('REMOTE_ADDR')
     if domain not in dict:
         dict[domain] = {}
-    if service not in dict[domain]:
-        dict[domain][service] = set([])
-    dict[domain][service].add(client_ip)
+        secrets[domain] = secret
+    if secrets[domain] == secret:
+        if service not in dict[domain]:
+            dict[domain][service] = set([])
+        dict[domain][service].add(client_ip)
     
     pickle.dump(dict, open(DICT_FILE, "wb"))
     
@@ -27,10 +31,11 @@ def register(domain, service):
 @route('/resolve/<domain>/<service>')
 def resolve(domain, service):
     client_ip = request.environ.get('REMOTE_ADDR')
-    if domain in dict and service in dict[domain]:
-        if client_ip in dict[domain][service]:
-            return client_ip
-        return list(dict[domain][service])[0]
+    ips_set = dict.get(domain, {}).get(service, set([]))
+    if client_ip in ips_set:
+        return client_ip
+    if len(ips_set) > 0:
+        return list(ips_set)[0]
     return ''
     
     
