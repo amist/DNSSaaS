@@ -55,20 +55,25 @@ class DNSSClient(object):
       time.sleep(self.sleep_time)
       if counter == 0:
         r = requests.get(self.server_url + '/register/{secret}/{service}'.format(**self.conf))
-        print(r.text)
         status = r.text
-        if 'OK 'not in status: continue
-      counter += 1
+        print(status)
+        if 'OK' not in status: continue
+      counter = (counter + 1) % 50
       r = requests.get(self.server_url + '/resolve/%s' % self.secret)
-      stuff = r.json()
+      stuff = r.text
+      print("stuff =>", stuff)
+      stuff = json.loads(stuff)
+      print ("got stuff %s" % stuff)
       hosts = stuff['hosts']
-      self.handle_hosts(hosts, self.etc_hosts)
+      self.handle_hosts(hosts)
 
   def handle_hosts(self, hosts):
     new_etchosts = "\n".join("%s : %s" % (ip, host) 
-                             for host, ip in sorted(hosts.items))
-    with open(self.etchosts, 'w') as f:
-       f.write(self.etc_hosts_template.format(hosts=new_etchosts))
+                             for host, ip in sorted(hosts.items()))
+    new_hosts = self.etc_hosts_template.format(new_hosts=new_etchosts)
+    print(new_hosts)
+    with open(self.etc_hosts, 'w') as f:
+       f.write(new_hosts)
               
     
       
