@@ -7,7 +7,7 @@ import os
 import requests
 import random
 import json
-DEFAULT_JSON = {"DNSS_Server": "http://10.149.208.98/",
+DEFAULT_JSON = {"DNSS_Server": "http://10.149.208.98:8000/",
                 "etc_hosts": '/etc/hosts',
                 "sleep_time": 5,
                 'secret': 'my_very_long_secret_stuff',
@@ -54,12 +54,19 @@ class DNSSClient(object):
     while 1:
       time.sleep(self.sleep_time)
       if counter == 0:
-        r = requests.get(self.server_url + '/register/{secret}/{service}'.format(**self.conf))
+        try:
+          r = requests.get(self.server_url + '/register/{secret}/{service}'.format(**self.conf))
+        except Exception as e:
+          print ("error registering... %s" % e)
+          continue
         status = r.text
         print(status)
         if 'OK' not in status: continue
       counter = (counter + 1) % 50
-      r = requests.get(self.server_url + '/resolve/%s' % self.secret)
+      try:
+        r = requests.get(self.server_url + '/resolve/%s' % self.secret)
+      except Exception as e:
+        print("error resolving hosts... %s"%e)
       stuff = r.text
       print("stuff =>", stuff)
       stuff = json.loads(stuff)
