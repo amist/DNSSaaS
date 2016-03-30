@@ -1,7 +1,10 @@
-from bottle import default_app, route, run, request, get
+from bottle import default_app, route, run, request, get, view
+import bottle
 import random
 import os
+import time
 
+bottle.TEMPLATE_PATH.insert(0, 'templates/')
 
 MAX_IDLE_TIME = 10
 
@@ -27,11 +30,12 @@ def register(secret, service):
 
 def clear_old(services):
     current_time = time.time()
-    for s, hosts in services.items():
-        for host in list(hosts):
-            if current_time - host['last_time'] < MAX_IDLE_TIME: 
+    for s, hosts in list(services.items()):
+        for host, data in list(hosts.items()):
+            if current_time - data['last_time'] > MAX_IDLE_TIME: 
                 del hosts[host]
-    
+        if not hosts:
+            del services[s]
 @route('/resolve/<secret>')
 def resolve(secret):
     client_ip = request.environ.get('REMOTE_ADDR')
@@ -42,6 +46,12 @@ def resolve(secret):
                            in services.items()))
             
            }
+    
+
+@view('monitor.tpl')
+@route('/monitor/<secret>')
+def monitor(secret):
+    return table.get(secret, {})
     
 application = default_app()
 
